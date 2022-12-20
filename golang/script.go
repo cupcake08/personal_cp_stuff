@@ -6,8 +6,15 @@ import (
 	"log"
 	"os"
 	"strconv"
+	"time"
 )
 
+/**
+*
+*
+*
+*
+ */
 // path to template file
 const TEMPLATE string = "/home/ankit/CP/template.cpp"
 
@@ -34,16 +41,41 @@ func impStuff() {
 	}
 	defer oldFile.Close()
 
+	bytes, err := io.ReadAll(oldFile)
+	if err != nil {
+		log.Fatal(err.Error())
+	}
+	currentTime := time.Now()
+
+	s := fmt.Sprintf(`/**
+*
+* author: Ankit Bhankharia
+* created at: %d-%d-%d %d:%d:%d
+*/
+`,
+		currentTime.Year(),
+		currentTime.Month(),
+		currentTime.Day(),
+		currentTime.Hour(),
+		currentTime.Minute(),
+		currentTime.Second(),
+	)
+	idx := len(s)
+	idx++
+
 	for i := 0; i < filesCount; i++ {
 		fileName := fmt.Sprintf("%s.cpp", string(rune(65+i)))
 		file, err := os.Create(fileName)
 		if err != nil {
 			log.Fatal(err)
 		}
-		_, err = io.Copy(file, oldFile)
+
+		file.WriteString(s + "\n")
+		n, err := file.WriteAt(bytes, int64(idx))
 		if err != nil {
-			log.Fatal(err)
+			log.Fatal(err.Error())
 		}
+		fmt.Printf("%d bytes written\n", n)
 
 		err = file.Sync()
 		if err != nil {

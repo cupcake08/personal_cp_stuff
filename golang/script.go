@@ -14,7 +14,7 @@ import (
 // path to template file
 const TEMPLATE string = "/home/ankit/CP/template.cpp"
 
-func impStuff(params ...string) {
+func impStuff(result *codeforces.Result, params ...string) {
 	var folderName string
 	var filesCount int
 	folderName = params[0]
@@ -23,17 +23,14 @@ func impStuff(params ...string) {
 		log.Fatal(err.Error())
 		os.Exit(1)
 	}
+
 	err = os.Mkdir(folderName, os.ModePerm)
+
 	if err != nil {
 		log.Fatal(err)
 	}
 
 	err = os.Chdir(folderName)
-	if err != nil {
-		log.Fatal(err)
-	}
-	// filesCount, err := strconv.Atoi(os.Args[2])
-
 	if err != nil {
 		log.Fatal(err)
 	}
@@ -48,47 +45,60 @@ func impStuff(params ...string) {
 	if err != nil {
 		log.Fatal(err.Error())
 	}
+	if len(params) > 2 {
+		folderName = params[2]
+	}
 	currentTime := time.Now()
-
-	s := fmt.Sprintf(`/**
-*
-* author: Ankit Bhankharia
-* created at: %d-%d-%d %d:%d:%d
-*/
-`,
-		currentTime.Year(),
-		currentTime.Month(),
-		currentTime.Day(),
-		currentTime.Hour(),
-		currentTime.Minute(),
-		currentTime.Second(),
-	)
-	idx := len(s)
-	idx++
 
 	for i := 0; i < filesCount; i++ {
 		fileName := fmt.Sprintf("%s.cpp", string(rune(65+i)))
+
 		file, err := os.Create(fileName)
 		if err != nil {
 			log.Fatal(err)
 		}
 
+		if result != nil {
+			fileName = result.Problems[i].Name
+		} else {
+			fileName = "NA"
+		}
+		s := fmt.Sprintf(`/**
+*
+* Author: Ankit Bhankharia
+* Created At: %d-%d-%d %d:%d:%d
+* Contest: %s
+* Problem: %s
+*/
+`,
+			currentTime.Year(),
+			currentTime.Month(),
+			currentTime.Day(),
+			currentTime.Hour(),
+			currentTime.Minute(),
+			currentTime.Second(),
+			folderName,
+			fileName,
+		)
+		idx := len(s)
+		idx++
+
 		file.WriteString(s + "\n")
-		n, err := file.WriteAt(bytes, int64(idx))
+
+		_, err = file.WriteAt(bytes, int64(idx))
+
 		if err != nil {
 			log.Fatal(err.Error())
 		}
-		fmt.Printf("%d bytes written\n", n)
 
 		err = file.Sync()
+
 		if err != nil {
 			log.Fatal(err)
 		}
 
 		file.Close()
 	}
-
-	log.Println("Files Created Sucsessfully.")
 }
 
 func main() {
@@ -102,16 +112,16 @@ func main() {
 		}
 
 		contestId := os.Args[2]
-		_, problems, err := codeforces.CodeforcesStandings(contestId)
+		result, err := codeforces.CodeforcesStandings(contestId)
 		if err != nil {
 			log.Fatal(err)
 		}
-		impStuff("codeforces_contest_"+contestId, fmt.Sprint(problems))
+		impStuff(result, "codeforces_contest_"+contestId, fmt.Sprint(len(result.Problems)), result.Contest.Name)
 	} else {
 		if len(os.Args) < 4 {
 			log.Fatal("Not enough arguments. Aborting.")
 			os.Exit(1)
 		}
-		impStuff(os.Args[2], os.Args[3])
+		impStuff(nil, os.Args[2], os.Args[3])
 	}
 }

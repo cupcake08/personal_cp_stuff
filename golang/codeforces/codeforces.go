@@ -34,24 +34,24 @@ type Problem struct {
 // get required data from codeforces api
 //
 // @returns Name of Contest, Number of Problems, Error
-func CodeforcesStandings(contestId string) (string, int, error) {
+func CodeforcesStandings(contestId string) (*Result, error) {
 
 	resp, err := http.Get(BaseURI + ContestStandingURI + "?contestId=" + contestId)
 	if err != nil {
-		return "", 0, err
+		return &Result{}, err
 	}
 
 	respData, err := io.ReadAll(resp.Body)
 
 	if err != nil {
-		return "", 0, err
+		return &Result{}, err
 	}
 
 	response := &ContestStandingResponse{}
 	err = json.Unmarshal(respData, response)
 	if err != nil {
-		return "", 0, err
+		return &Result{}, err
 	}
 
-	return response.Result.Contest.Name, len(response.Result.Problems), nil
+	return response.Result, nil
 }

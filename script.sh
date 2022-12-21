@@ -12,7 +12,6 @@ case $platform in
         while kill -0 $BG_PID 2>/dev/null; do
             gum spin -s line --title "work in progress..." -- sleep 1
         done
-        echo "Done!"
     ;;
     "custom")
         folderName=$(gum input --placeholder "Enter folder name")
@@ -23,6 +22,8 @@ case $platform in
         go run /home/ankit/CP/golang/script.go $platform $folderName $number
     ;;
 esac
+
+gum style --foreground '#FE987B' "(>‿◠)✌ Yay! Done"
 
 if gum confirm "Want to open editor?"; then
     editor=$(gum choose "vs code" "vim")

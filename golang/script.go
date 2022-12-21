@@ -7,20 +7,23 @@ import (
 	"os"
 	"strconv"
 	"time"
+
+	codeforces "github.com/cupcake08/cp_scripts/codeforces"
 )
 
-/**
-*
-*
-*
-*
- */
 // path to template file
 const TEMPLATE string = "/home/ankit/CP/template.cpp"
 
-func impStuff() {
-	folderName := os.Args[1]
-	err := os.Mkdir(folderName, os.ModePerm)
+func impStuff(params ...string) {
+	var folderName string
+	var filesCount int
+	folderName = params[0]
+	filesCount, err := strconv.Atoi(params[1])
+	if err != nil {
+		log.Fatal(err.Error())
+		os.Exit(1)
+	}
+	err = os.Mkdir(folderName, os.ModePerm)
 	if err != nil {
 		log.Fatal(err)
 	}
@@ -29,8 +32,8 @@ func impStuff() {
 	if err != nil {
 		log.Fatal(err)
 	}
+	// filesCount, err := strconv.Atoi(os.Args[2])
 
-	filesCount, err := strconv.Atoi(os.Args[2])
 	if err != nil {
 		log.Fatal(err)
 	}
@@ -89,9 +92,26 @@ func impStuff() {
 }
 
 func main() {
-	if len(os.Args) < 3 {
-		log.Fatal("Not enough argument1. Aborting.")
-		os.Exit(1)
+	platform := os.Args[1]
+
+	os.Chdir("..")
+	if platform == "codeforces" {
+		if len(os.Args) < 3 {
+			log.Fatal("Not enough arguments. Aborting.")
+			os.Exit(1)
+		}
+
+		contestId := os.Args[2]
+		_, problems, err := codeforces.CodeforcesStandings(contestId)
+		if err != nil {
+			log.Fatal(err)
+		}
+		impStuff("codeforces_contest_"+contestId, fmt.Sprint(problems))
+	} else {
+		if len(os.Args) < 4 {
+			log.Fatal("Not enough arguments. Aborting.")
+			os.Exit(1)
+		}
+		impStuff(os.Args[2], os.Args[3])
 	}
-	impStuff()
 }

@@ -1,27 +1,53 @@
 #!/bin/sh
 
-folderName=$(gum input --placeholder "Enter folder name")
-echo "Folder name is $(gum style --foreground 212 $folderName)"
-number=$(gum input --placeholder "Enter number of files to create")
-echo "Number of files is $(gum style --foreground 212 $number)"
+platform=$(gum choose "codeforces" "custom")
+echo "Platform choosen > $(gum style --foreground 212 $platform)"
 
-gum spin -s line --title "work in progress..." -- sleep 1
-go run /home/ankit/CP/golang/script.go $folderName $number
+case $platform in
+    "codeforces")
+        contestId=$(gum input --placeholder "Enter contest id")
+        cd golang
+        go run /home/ankit/CP/golang/script.go $platform $contestId &
+        BG_PID=$!
+        while kill -0 $BG_PID 2>/dev/null; do
+            gum spin -s line --title "work in progress..." -- sleep 1
+        done
+        echo "Done!"
+    ;;
+    "custom")
+        folderName=$(gum input --placeholder "Enter folder name")
+        echo "Folder name is $(gum style --foreground 212 $folderName)"
+        number=$(gum input --placeholder "Enter number of files to create")
+        echo "Number of files is $(gum style --foreground 212 $number)"
+        cd golang
+        go run /home/ankit/CP/golang/script.go $platform $folderName $number
+    ;;
+esac
 
 if gum confirm "Want to open editor?"; then
-    gum style --border normal --margin "1" --padding "1 2" --border-foreground 212 "Choose Your Editor"
-    
     editor=$(gum choose "vs code" "vim")
-    
+    cd ..
     case $editor in
         "vs code")
-            code $folderName
+            case $platform in
+                "codeforces")
+                    code codeforces_contest_$contestId
+                ;;
+                "custom")
+                    code $folderName
+                ;;
+            esac
         ;;
         "vim")
-            vim $folderName
+            case $platform in
+                "codeforces")
+                    vim codeforces_contest_$contestId
+                ;;
+                "custom")
+                    vim $folderName
+                ;;
+            esac
         ;;
     esac
 fi
-
-
 clear

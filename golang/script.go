@@ -65,11 +65,12 @@ func impStuff(result *codeforces.Result, params ...string) {
 		}
 		s := fmt.Sprintf(`/**
 *
-* Author: Ankit Bhankharia
-* Created At: %d-%d-%d %d:%d:%d
-* Contest: %s
-* Problem: %s
-*/
+* Author      : Ankit Bhankharia
+* Created At  : %d-%d-%d %d:%d:%d
+* Contest     : %s
+* Problem     : %s
+*
+**/
 `,
 			currentTime.Year(),
 			currentTime.Month(),
@@ -105,7 +106,7 @@ func main() {
 	platform := os.Args[1]
 
 	os.Chdir("..")
-	if platform == "codeforces" {
+	if platform == "Codeforces" {
 		if len(os.Args) < 3 {
 			log.Fatal("Not enough arguments. Aborting.")
 			os.Exit(1)

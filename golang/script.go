@@ -1,6 +1,7 @@
 package main
 
 import (
+	"flag"
 	"fmt"
 	"io"
 	"log"
@@ -8,6 +9,7 @@ import (
 	"strconv"
 	"time"
 
+	codeforcescrawler "github.com/cupcake08/codeforces_crawler"
 	codeforces "github.com/cupcake08/cp_scripts/codeforces"
 )
 
@@ -17,14 +19,21 @@ const TEMPLATE string = "/home/ankit/CP/template.cpp"
 func impStuff(result *codeforces.Result, params ...string) {
 	var folderName string
 	var filesCount int
-	folderName = params[0]
-	filesCount, err := strconv.Atoi(params[1])
-	if err != nil {
-		log.Fatal(err.Error())
-		os.Exit(1)
+
+	if result != nil {
+		folderName = "codeforces_contest_" + params[0]
+		filesCount = len(result.Problems)
+	} else {
+		folderName = params[0]
+		fc, err := strconv.Atoi(params[1])
+		if err != nil {
+			log.Fatal(err.Error())
+			os.Exit(1)
+		}
+		filesCount = fc
 	}
 
-	err = os.Mkdir(folderName, os.ModePerm)
+	err := os.Mkdir(folderName, os.ModePerm)
 
 	if err != nil {
 		log.Fatal(err)
@@ -45,33 +54,60 @@ func impStuff(result *codeforces.Result, params ...string) {
 	if err != nil {
 		log.Fatal(err.Error())
 	}
-	if len(params) > 2 {
-		folderName = params[2]
-	}
+
 	currentTime := time.Now()
+	var crawler *codeforcescrawler.Contest
+	if result != nil {
+		f, err := strconv.Atoi(params[0])
+		if err != nil {
+			log.Fatal(err.Error())
+		}
+		crawler = codeforcescrawler.NewContest(f)
+	}
 
 	for i := 0; i < filesCount; i++ {
-		fileName := fmt.Sprintf("%s.cpp", string(rune(65+i)))
+		x := string(rune(65 + i))
+		var fileName string
+		if crawler != nil {
+			err := os.Mkdir(x, 0777)
+			if err != nil {
+				log.Fatal(err.Error())
+			}
 
+			err = os.Chdir(x)
+			if err != nil {
+				log.Fatal(err.Error())
+			}
+
+			_, err = os.Getwd()
+			if err != nil {
+				log.Fatal(err.Error())
+			}
+			crawler.GetTestCases(result.Problems[i].Index)
+		}
+
+		fileName = fmt.Sprintf("%s.cpp", x)
 		file, err := os.Create(fileName)
 		if err != nil {
 			log.Fatal(err)
 		}
+		defer file.Close()
 
 		if result != nil {
+			folderName = result.Contest.Name
 			fileName = result.Problems[i].Name
 		} else {
 			fileName = "NA"
 		}
 		s := fmt.Sprintf(`/**
-*
-* Author      : Ankit Bhankharia
-* Created At  : %d-%d-%d %d:%d:%d
-* Contest     : %s
-* Problem     : %s
-*
-**/
-`,
+			*
+			* Author      : Ankit Bhankharia
+			* Created At  : %d-%d-%d %d:%d:%d
+			* Contest     : %s
+			* Problem     : %s
+			*
+			**/
+			`,
 			currentTime.Year(),
 			currentTime.Month(),
 			currentTime.Day(),
@@ -97,32 +133,34 @@ func impStuff(result *codeforces.Result, params ...string) {
 		if err != nil {
 			log.Fatal(err)
 		}
-
-		file.Close()
+		if crawler != nil {
+			os.Chdir("..")
+		}
 	}
 }
 
 func main() {
-	platform := os.Args[1]
-
+	platform := flag.String("platform", "Codeforces", "Select From Which Platform You Need to use it for.")
+	contestId := flag.String("contestId", "599", "Codeforces Contest Id for which you want to work")
+	filesCount := flag.String("count", "0", "Number of files You want to create.")
+	folderName := flag.String("name", "test", "Name Of Your Folder")
+	flag.Parse()
 	os.Chdir("..")
-	if platform == "Codeforces" {
+	if *platform == "Codeforces" {
 		if len(os.Args) < 3 {
 			log.Fatal("Not enough arguments. Aborting.")
 			os.Exit(1)
 		}
-
-		contestId := os.Args[2]
-		result, err := codeforces.CodeforcesStandings(contestId)
+		result, err := codeforces.CodeforcesStandings(*contestId)
 		if err != nil {
 			log.Fatal(err)
 		}
-		impStuff(result, "codeforces_contest_"+contestId, fmt.Sprint(len(result.Problems)), result.Contest.Name)
+		impStuff(result, *contestId)
 	} else {
 		if len(os.Args) < 4 {
 			log.Fatal("Not enough arguments. Aborting.")
 			os.Exit(1)
 		}
-		impStuff(nil, os.Args[2], os.Args[3])
+		impStuff(nil, *folderName, *filesCount)
 	}
 }

@@ -28,7 +28,7 @@ case $platform in
     "Codeforces")
         contestId=$(gum input --placeholder "Enter contest id")
         cd golang
-        go run script.go $platform $contestId &
+        go run script.go --platform=$platform --contestId=$contestId &
         BACK_PID=$!
         while kill -0 $BACK_PID 2>/dev/null; do
             gum spin -s line --title "work in progress..." -- sleep 1
@@ -42,7 +42,7 @@ case $platform in
         number=$(gum input --placeholder "Enter number of files to create")
         echo "Number of files is $(gum style --foreground 212 $number)"
         cd golang
-        go run script.go $platform $folderName $number
+        go run script.go --platform=$platform --name=$folderName --count=$number
         cd ..
         add_to_gitignore $folderName
     ;;

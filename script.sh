@@ -31,7 +31,7 @@ case $platform in
         go run script.go --platform=$platform --contestId=$contestId &
         BACK_PID=$!
         while kill -0 $BACK_PID 2>/dev/null; do
-            gum spin -s line --title "work in progress..." -- sleep 1
+            gum spin --spinner minidot --title "work in progress..." --title.foreground 99 -- sleep 1
         done
         cd ..
         add_to_gitignore codeforces_contest_$contestId

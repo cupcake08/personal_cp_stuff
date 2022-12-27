@@ -11,6 +11,7 @@ using namespace std;
 #define mp make_pair
 #define ff first
 #define ss second
+#define nl '\n'
 #define all(x) x.begin(), x.end()
 #define rall(x) x.rbegin(), x.rend()
 #define sz(x) (int)x.size()
@@ -22,17 +23,16 @@ using namespace std;
 #define pii pair<int, int>
 #define pll pair<ll, ll>
 #define vin(v, n) \
-    vll v(n);     \
-    rep(i, 0, n) cin >> v[i];
+    vi v(n);     \
+    for(auto &i:v) cin >> i;
 #define vout(v)           \
     for (auto i : v)      \
         cout << i << " "; \
     cout << endl;
 
-const int mod = 1e9 + 7;
+const int MOD = 1e9 + 7;
 
-void solve()
-{
+void solve(){
 }
 
 int main()
@@ -40,8 +40,5 @@ int main()
     IOfast;
     int t = 1;
     cin >> t;
-    while (t--)
-    {
-        solve();
-    }
+    while (t--) solve();
 }

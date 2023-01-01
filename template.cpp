@@ -1,4 +1,5 @@
 #include <bits/stdc++.h>
+#include <set>
 using namespace std;
 
 #define IOfast                        \
@@ -16,19 +17,18 @@ using namespace std;
 #define rall(x) x.rbegin(), x.rend()
 #define sz(x) (int)x.size()
 #define rep(i, a, b) for (int i = a; i < b; i++)
-#define per(i, a, b) for (int i = a; i >= b; i--)
-#define endl '\n'
-#define vi vector<int>
 #define vll vector<ll>
 #define pii pair<int, int>
 #define pll pair<ll, ll>
-#define vin(v, n) \
-    vi v(n);     \
-    for(auto &i:v) cin >> i;
+#define yes cout << "YES\n"
+#define no cout << "NO\n"
 #define vout(v)           \
     for (auto i : v)      \
         cout << i << " "; \
-    cout << endl;
+    cout << nl;
+
+template<class T> bool ckmin(T&a, T&b) { bool B = a > b; a = min(a,b); return B; }
+template<class T> bool ckmax(T&a, T&b) { bool B = a < b; a = max(a,b); return B; }
 
 const int MOD = 1e9 + 7;
 

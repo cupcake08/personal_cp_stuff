@@ -1,3 +1,4 @@
+// credit: Geothermal (codeforces)
 struct mi {
 	ll v; explicit operator ll() const { return v; }
 	mi() { v = 0; }

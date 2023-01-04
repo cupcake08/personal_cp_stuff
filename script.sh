@@ -1,6 +1,6 @@
 #!/bin/sh
 
-platform=$(gum choose "Atcoder" "Codeforces" "Custom")
+platform=$(gum choose "Atcoder" "Codeforces" "Codechef" "Custom")
 echo "Platform choosen > $(gum style --foreground 212 $platform)"
 
 # Add to gitignore
@@ -23,6 +23,9 @@ editor_action() {
         ;;
         "Custom")
             $1 $folderName
+        ;;
+        *)
+            $1 $contest
         ;;
     esac
 }
@@ -49,6 +52,13 @@ case $platform in
         loader_action $CODEFORCES_PID
         cd ..
         add_to_gitignore codeforces_contest_$contestId
+    ;;
+    "Codechef")
+        contest=$(gum input --placeholder "Enter Codechef contest id Id e.g START71B")
+        python ~/codechef/codechef_cp_helper/main.py -c contest &
+        CODECHEF_PID=$!
+        loader_action $CODECHEF_PID
+        add_to_gitignore $contest
     ;;
     "Custom")
         folderName=$(gum input --placeholder "Enter folder name")

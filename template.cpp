@@ -1,11 +1,12 @@
 #include <bits/stdc++.h>
-#include <set>
+#include <cmath>
 using namespace std;
 
 #define IOfast                        \
     ios_base::sync_with_stdio(false); \
     cin.tie(NULL);                    \
     cout.tie(NULL);
+#define ankit main
 #define ll long long
 #define ld long double
 #define pb push_back
@@ -30,12 +31,26 @@ using namespace std;
 template<class T> bool ckmin(T&a, T&b) { bool B = a > b; a = min(a,b); return B; }
 template<class T> bool ckmax(T&a, T&b) { bool B = a < b; a = max(a,b); return B; }
 
+/********** Debug Stuff ********/
+#define deb(...) log(#__VA_ARGS__, __VA_ARGS__)
+template<typename ...Args>
+void log(string vars,Args&&... values) {
+    cout << vars << " = ";
+    string delim = "";
+    (...,(cout << delim << values,delim = ", "));
+}
+/************/
+
 const int MOD = 1e9 + 7;
 
 void solve(){
+    int x = 50;
+    string y = "ankit";
+    double z = 60.0;
+    deb(x,y,z);
 }
 
-int main()
+int ankit()
 {
     IOfast;
     int t = 1;

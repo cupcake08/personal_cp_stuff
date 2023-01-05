@@ -1,5 +1,4 @@
 #include <bits/stdc++.h>
-#include <cmath>
 using namespace std;
 
 #define IOfast                        \
@@ -44,10 +43,6 @@ void log(string vars,Args&&... values) {
 const int MOD = 1e9 + 7;
 
 void solve(){
-    int x = 50;
-    string y = "ankit";
-    double z = 60.0;
-    deb(x,y,z);
 }
 
 int ankit()

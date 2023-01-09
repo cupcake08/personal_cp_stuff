@@ -55,7 +55,10 @@ case $platform in
     ;;
     "Codechef")
         contest=$(gum input --placeholder "Enter Codechef contest id Id e.g START71B")
-        python ~/codechef/codechef_cp_helper/main.py -c contest &
+        echo "contest id $contest" 
+        cwd=$(pwd)
+        echo $cwd
+        python /home/ankit/codechef/codechef_cp_helper/main.py -c $contest -d $cwd &
         CODECHEF_PID=$!
         loader_action $CODECHEF_PID
         add_to_gitignore $contest

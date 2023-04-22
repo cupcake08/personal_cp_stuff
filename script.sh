@@ -46,11 +46,13 @@ case $platform in
     ;;
     "Codeforces")
         contestId=$(gum input --placeholder "Enter contest id")
-        cd golang
-        go run script.go --platform=$platform --contestId=$contestId &
+        if test -d "codeforces_contest_$contestId"; then
+            echo "Folder already exists!"
+            exit 1
+        fi
+        ./golang/generate --platform=$platform --contestId=$contestId &
         CODEFORCES_PID=$!
         loader_action $CODEFORCES_PID
-        cd ..
         add_to_gitignore codeforces_contest_$contestId
     ;;
     "Codechef")
